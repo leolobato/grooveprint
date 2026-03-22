@@ -31,16 +31,19 @@
     <!-- Active state -->
     <div class="np-content" x-show="nowPlaying?.status === 'playing'" x-transition>
       <div class="np-artwork-wrap">
-        <img class="np-artwork"
-             :src="nowPlaying?.cover_url || ''"
-             :alt="nowPlaying ? nowPlaying.album : ''"
-             x-show="nowPlaying?.cover_url">
-        <div class="np-artwork np-artwork-placeholder" x-show="!nowPlaying?.cover_url">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-        </div>
+        <template x-if="nowPlaying?.cover_url">
+          <img class="np-artwork"
+               :src="nowPlaying.cover_url"
+               :alt="nowPlaying.album || ''">
+        </template>
+        <template x-if="!nowPlaying?.cover_url">
+          <div class="np-artwork np-artwork-placeholder">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+        </template>
       </div>
       <div class="np-meta">
         <div class="np-track" x-text="nowPlaying?.track"></div>
@@ -64,16 +67,19 @@
     <!-- Listening state (with last album) -->
     <div class="np-content" x-show="nowPlaying?.status === 'listening' && lastPlaying" x-transition>
       <div class="np-artwork-wrap">
-        <img class="np-artwork np-artwork-dimmed"
-             :src="lastPlaying?.cover_url || ''"
-             :alt="lastPlaying ? lastPlaying.album : ''"
-             x-show="lastPlaying?.cover_url">
-        <div class="np-artwork np-artwork-placeholder np-artwork-dimmed" x-show="!lastPlaying?.cover_url">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-        </div>
+        <template x-if="lastPlaying?.cover_url">
+          <img class="np-artwork np-artwork-dimmed"
+               :src="lastPlaying.cover_url"
+               :alt="lastPlaying.album || ''">
+        </template>
+        <template x-if="!lastPlaying?.cover_url">
+          <div class="np-artwork np-artwork-placeholder np-artwork-dimmed">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+        </template>
       </div>
       <div class="np-meta">
         <div class="np-artist np-artist-dimmed" x-text="lastPlaying?.artist"></div>
