@@ -648,7 +648,18 @@ async def health():
 @app.get("/")
 async def root():
     index = Path(__file__).parent.parent / "web" / "index.html"
-    return FileResponse(index, media_type="text/html")
+    return FileResponse(
+        index, media_type="text/html",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+@app.middleware("http")
+async def no_cache_web_assets(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/web/"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
 
 
 web_dir = Path(__file__).parent.parent / "web"

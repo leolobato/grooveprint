@@ -77,6 +77,19 @@ fun WebViewScreen(
         }
     }
 
+    // Push listening state changes to the web UI immediately
+    LaunchedEffect(Unit) {
+        snapshotFlow { currentIsListening.value }
+            .collect { listening ->
+                webView?.post {
+                    webView?.evaluateJavascript(
+                        "if(window.setClientListening){window.setClientListening($listening)}",
+                        null
+                    )
+                }
+            }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),

@@ -56,6 +56,12 @@ function grooveprintApp() {
       // Sync listening state from Android bridge
       if (this.isAndroidClient && window.Grooveprint) {
         this.clientListening = window.Grooveprint.isListening();
+        // Expose setter for Android to push state changes via evaluateJavascript
+        window.setClientListening = (v) => { this.clientListening = v; };
+        // Fallback poll every 5s
+        setInterval(() => {
+          this.clientListening = window.Grooveprint.isListening();
+        }, 5000);
       }
       // Manage SSE based on view
       this.$watch('view', (val) => {
@@ -105,10 +111,6 @@ function grooveprintApp() {
           this.lastPlaying = data;
         } else if (data?.status === 'idle') {
           this.lastPlaying = null;
-        }
-        // Re-sync listening state from Android bridge (handles remote start/stop)
-        if (this.isAndroidClient && window.Grooveprint) {
-          this.clientListening = window.Grooveprint.isListening();
         }
         if (data?.status === 'playing' && data.elapsed_s != null) {
           this._elapsedBase = data.elapsed_s;

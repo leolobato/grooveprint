@@ -20,7 +20,11 @@ import cc.grooveprint.android.service.ControlService
 import cc.grooveprint.android.service.ListeningService
 import cc.grooveprint.android.ui.WebViewScreen
 import cc.grooveprint.android.ui.theme.GrooveprintTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var controlService: ControlService? = null
@@ -37,12 +41,22 @@ class MainActivity : ComponentActivity() {
     private val remoteControlEnabled = MutableStateFlow(true)
     private val keepScreenOn = MutableStateFlow(false)
 
+    private var controlListeningJob: Job? = null
+
     private val controlConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             controlService = (binder as? ControlService.LocalBinder)?.service
             controlBound = true
+            // Sync listening state from ControlService (handles remote start/stop)
+            controlListeningJob = CoroutineScope(Dispatchers.Main).launch {
+                controlService?.isListening?.collect { listening ->
+                    isListening.value = listening
+                }
+            }
         }
         override fun onServiceDisconnected(name: ComponentName?) {
+            controlListeningJob?.cancel()
+            controlListeningJob = null
             controlService = null
             controlBound = false
         }

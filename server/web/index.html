@@ -57,9 +57,14 @@
           <span x-show="nowPlaying?.year" x-text="nowPlaying?.year"></span>
         </div>
         <div class="np-elapsed" x-show="displayElapsed != null && nowPlaying?.duration_s">
-          <span x-text="formatDuration(displayElapsed)"></span>
-          <span class="np-duration-sep"> / </span>
-          <span x-text="formatDuration(nowPlaying?.duration_s)"></span>
+          <div class="np-progress">
+            <div class="np-progress-fill" :style="`width: ${Math.min(100, (displayElapsed / nowPlaying?.duration_s) * 100)}%`"></div>
+          </div>
+          <div class="np-elapsed-text">
+            <span x-text="formatDuration(displayElapsed)"></span>
+            <span class="np-duration-sep"> / </span>
+            <span x-text="formatDuration(nowPlaying?.duration_s)"></span>
+          </div>
         </div>
       </div>
     </div>
