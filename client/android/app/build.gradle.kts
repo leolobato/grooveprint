@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,16 +17,15 @@ android {
         versionName = "1.0"
     }
 
-    signingConfigs {
-        create("release") {
-            val propsFile = project.rootProject.file("local.properties")
-            if (propsFile.exists()) {
-                val localProps = Properties()
-                localProps.load(propsFile.inputStream())
-                storeFile = file(localProps.getProperty("RELEASE_STORE_FILE", ""))
-                storePassword = localProps.getProperty("RELEASE_STORE_PASSWORD", "")
-                keyAlias = localProps.getProperty("RELEASE_KEY_ALIAS", "")
-                keyPassword = localProps.getProperty("RELEASE_KEY_PASSWORD", "")
+    val releaseStoreFile = System.getenv("RELEASE_STORE_FILE")
+
+    if (releaseStoreFile != null) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = System.getenv("RELEASE_STORE_PASSWORD") ?: ""
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("RELEASE_KEY_PASSWORD") ?: ""
             }
         }
     }
@@ -36,7 +33,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            if (releaseStoreFile != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
