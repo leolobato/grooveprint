@@ -258,20 +258,6 @@ tr:hover .btn-danger-icon {
   letter-spacing: 0.05em;
 }
 
-/* Listening with last album visible */
-.np-artwork-dimmed {
-  opacity: 0.4;
-  transition: opacity 500ms ease;
-}
-
-.np-artist-dimmed {
-  color: rgba(255, 255, 255, 0.35);
-}
-
-.np-album-dimmed {
-  color: rgba(255, 255, 255, 0.25);
-}
-
 .np-listening-label {
   font-size: 1rem;
   font-weight: 300;
