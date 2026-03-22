@@ -80,7 +80,7 @@ class MatchClient(private val audioCaptureManager: AudioCaptureManager) {
         val wavSizeKB = wavData.size / 1024
         log("Query #$queryNum: sending ${wavSizeKB}KB...")
 
-        val recordedAt = (System.currentTimeMillis() / 1000.0) - audioCaptureManager.bufferDurationS
+        val recordedAt = System.currentTimeMillis() / 1000.0
 
         try {
             val request = Request.Builder()
